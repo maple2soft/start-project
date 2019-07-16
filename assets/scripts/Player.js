@@ -19,7 +19,7 @@ cc.Class({
         // 最大移动速度
         maxMoveSpeed: 0,
         // 加速度
-        accel: 0,
+        accel: 0,       
     },
 
     setJumpAction: function () {
@@ -31,17 +31,92 @@ cc.Class({
         return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
     },
 
+    onKeyDown(event) {
+        // set a acc flag
+        switch (event.keyCode) {
+            case cc.macro.KEY.a:
+                this.accLeft = true;
+                break;
+            case cc.macro.KEY.left:
+                this.accLeft = true;
+                break;
+            case cc.macro.KEY.d:
+                this.accRight = true;
+                break;
+            case cc.macro.KEY.right:
+                this.accRight = true;
+                break;
+        }
+    },
+
+    onKeyUp(event) {
+        // set a acc flag
+        switch (event.keyCode) {
+            case cc.macro.KEY.a:
+                this.accLeft = false;
+                break;
+            case cc.macro.KEY.left:
+                this.accLeft = false;
+                break;
+            case cc.macro.KEY.d:
+                this.accRight = false;
+                break;
+            case cc.macro.KEY.right:
+                this.accRight = false;
+                break;
+        }
+    },
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
         // 初始化跳跃动作
         this.jumpAction = this.setJumpAction();
         this.node.runAction(this.jumpAction);
+
+        // init accLeft and accRight
+        this.accLeft = false;
+        this.accRight = false;
+
+        // set xSpeed
+        this.xSpeed = 0;
+
+        // add keyboard listener
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    },
+
+    onDestroy() {
+        // 取消键盘监听事件
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.off(cc.systemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
 
     start() {
 
     },
 
-    // update (dt) {},
+    update(dt) {
+        // update xSpeed
+        if (this.accLeft) {
+            this.xSpeed -= this.accel * dt;
+        } else if (this.accRight) {
+            this.xSpeed += this.accel * dt;
+        }
+
+        // limit xSpeed to maxMovSpeed
+        if (Math.abs(this.xSpeed) > this.maxMoveSpeed) {
+            this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
+        }
+
+        // update player x position
+        this.node.x += this.xSpeed * dt;        
+
+        // confine the monster in screen
+        if (this.node.x >= 441) {
+            this.node.x = 441;
+        } else if (this.node.x <= -441) {
+            this.node.x = -441;
+        }
+    },
 });

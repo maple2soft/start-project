@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.2946952167333812,
-      "y": 0.2946952167333812,
+      "x": 0.4234375,
+      "y": 0.4234375,
       "z": 1
     },
     "_quat": {
@@ -486,10 +486,10 @@
       "__id__": 9
     },
     "_enabled": true,
-    "jumpHeight": 200,
+    "jumpHeight": 150,
     "jumpDuration": 0.3,
     "maxMoveSpeed": 400,
-    "accel": 350,
+    "accel": 1000,
     "_id": "0fCLMjfDNMDqFPYbHpzHbv"
   },
   {
