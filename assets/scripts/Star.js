@@ -16,13 +16,33 @@ cc.Class({
         pickRadius: 0,
     },
 
+    // get player to star distance
+    getPlayerDistance: function () {
+        var playerPos = this.game.player.getPosition();
+        var dist = this.node.position.sub(playerPos).mag();
+        return dist;
+    },
+
+    onPicked: function () {
+        // spawn a new star
+        this.game.spawnNewStar();
+        // destory itself
+        this.node.destroy();
+    },
+
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},
 
-    start () {
+    start() {
 
     },
 
-    // update (dt) {},
+    update(dt) {
+        // count dist compare to star pickRadius property
+        if (this.getPlayerDistance() < this.pickRadius) {
+            this.onPicked();
+            return;
+        }
+    },
 });
